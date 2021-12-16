@@ -1,0 +1,97 @@
+// 定位居中 上下距离控制
+@mixin position-x($top: auto, $bottom: auto, $center: 'false'){
+  position: absolute;
+  top: $top;
+  bottom: $bottom;
+  @if $center == 'true' {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+// 导入assets png图片
+@mixin srcImg($img: '') {
+  background: url('../assets/img/'+$img+'.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+// 页面滚动
+@mixin scrollable($direct: 'y') {
+  overflow-#{$direct}: scroll;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// 文字超出限制
+@mixin line($line: 1) {
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+}
+
+// 如果当前正在处于页面滚动回到顶部阶段，将整个页面所有事件屏蔽
+@mixin forbid-all {
+  pointer-events: none;
+}
+
+// 底部横线
+@mixin hairline($position, $color) {
+  @if $position == 'top' {
+    &:before {
+      left: 0;
+      top: 0;
+      bottom: auto;
+      right: auto;
+      height: 1Px;
+      width: 100%;
+      @include hairline-background-image($color);
+      background-size: 100% 1Px;
+    }
+  } @else if $position == 'left'{
+    &:before {
+      left: 0;
+      top: 0;
+      bottom: auto;
+      right: auto;
+      width: 1Px;
+      height: 100%;
+      @include hairline-background-image($color);
+      background-size: 100% 1Px;
+    }
+  } @else if $position == 'right'{
+    &:after {
+      right: 0;
+      top: 0;
+      left: auto;
+      bottom: auto;
+      width: 1Px;
+      height: 100%;
+      @include hairline-background-image($color);
+      background-size: 100% 1Px;
+    }
+  } @else if $position == 'bottom'{
+    &:after {
+      left: 0;
+      bottom: 0;
+      right: auto;
+      top: auto;
+      height: 1Px;
+      width: 100%;
+      @include hairline-background-image($color);
+      background-size: 100% 1Px;
+    }
+  }
+}
+@mixin hairline-background-image ($color) {
+  content: "";
+  position: absolute;
+  display: block;
+  z-index: 15;
+  background-image: linear-gradient(180deg, $color, $color 50%, transparent 50%);
+  background-repeat: no-repeat;
+}
