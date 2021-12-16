@@ -1,8 +1,7 @@
 import Qs from "qs";
 import axios from "axios";
-import { timeout } from "@/constant";
 import { Toast } from "vant";
-import { IMethod } from "@/interface";
+import { timeout } from "@/constant";
 import { addPending, removePending } from "@/services/pending";
 
 // 处理请求返回数据格式
@@ -10,6 +9,7 @@ function handleSuccess(response) {
   const prefix = response.config.prefix;
   const res = response.data;
   const prefixDataMap = {
+    // 默认处理：例子
     HOME_PREFIX() {
       const errorNo = res.code;
       if (errorNo === "0") {
@@ -22,6 +22,7 @@ function handleSuccess(response) {
         return Promise.reject(res.data.errorInfo);
       }
     },
+    // 特殊处理：例子
     MALL_PREFIX() {
       const errorNo = res.code;
       if (errorNo === "0") {
@@ -33,7 +34,7 @@ function handleSuccess(response) {
         Toast(res.data.errorInfo);
         return Promise.reject(res.data.errorInfo);
       }
-    }
+    },
   };
   return prefixDataMap[prefix]();
 }
@@ -89,14 +90,14 @@ function checkStatus(response) {
       }
       return {
         status,
-        msg: errorInfo
+        msg: errorInfo,
       };
     }
   }
   // 异常状态下，把错误信息返回去
   return {
     status: -404,
-    msg: "网络异常"
+    msg: "网络异常",
   };
 }
 
@@ -105,14 +106,14 @@ function checkStatus(response) {
  * 添加一个请求拦截器 （于transformRequest之前处理）
  */
 const axiosConfig = {
-  success: config => {
+  success: (config) => {
     // 在请求开始前，对之前的请求做检查取消操作
     removePending(config);
     // 将当前请求添加到 pending 中
     addPending(config);
     return config;
   },
-  error: error => Promise.reject(error)
+  error: (error) => Promise.reject(error),
 };
 
 /**
@@ -121,12 +122,12 @@ const axiosConfig = {
  * 返回的数据类型默认是json，若是其他类型（text）就会出现问题，因此用try,catch捕获异常
  */
 const axiosResponse = {
-  success: response => {
+  success: (response) => {
     // 在请求结束后，移除本次请求
     removePending(response);
     return checkStatus(response);
   },
-  error: error => {
+  error: (error) => {
     const { response } = error;
     if (axios.isCancel(error)) {
       console.log("repeated request: " + error.message);
@@ -144,7 +145,7 @@ const axiosResponse = {
       // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
       console.error("断网了~");
     }
-  }
+  },
 };
 
 axios.interceptors.request.use(axiosConfig.success, axiosConfig.error);
@@ -164,23 +165,23 @@ export default function request({
   method,
   data,
   prefix = "HOME_PREFIX",
-  headers = {}
-}: IMethod) {
+  headers = {},
+}) {
   headers = Object.assign(
     method === "get"
       ? {
           Accept: "application/json",
-          "Content-Type": "application/json; charset=UTF-8"
+          "Content-Type": "application/json; charset=UTF-8",
         }
       : {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
     headers
   );
 
   const contentType = headers["Content-Type"];
 
-  const defaultConfig: IMethod = {
+  const defaultConfig = {
     url,
     method: method || "post",
     timeout,
@@ -188,7 +189,7 @@ export default function request({
     data,
     prefix,
     headers,
-    responseType: "json"
+    responseType: "json",
   };
 
   if (method === "get") {
@@ -196,7 +197,7 @@ export default function request({
     // 给 get 请求加上时间戳参数，避免从缓存中拿数据。
     if (data !== undefined) {
       defaultConfig.params = Object.assign(defaultConfig.params, {
-        _t: new Date().getTime()
+        _t: new Date().getTime(),
       });
     } else {
       defaultConfig.params = { _t: new Date().getTime() };

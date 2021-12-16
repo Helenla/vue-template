@@ -8,7 +8,7 @@ import Api from "./request";
 export function getSysParam(data = {}) {
   return Api({
     url: "/shop/getSysParam",
-    data
+    data,
   });
 }
 
@@ -16,6 +16,6 @@ export function getFirstLvGroup(data = {}) {
   return Api({
     url: "/shop/getFirstLvGroup",
     data,
-    prefix: "MALL_PREFIX"
+    prefix: "MALL_PREFIX",
   });
 }

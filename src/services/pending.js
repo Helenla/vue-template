@@ -19,17 +19,17 @@ const pending = new Map();
  * 添加请求
  * @param {Object} config
  */
-const addPending = config => {
+const addPending = (config) => {
   // 保持 url 的唯一性
   const url = [
     config.method,
     config.url,
     Qs.stringify(config.params),
-    config.data
+    config.data,
   ].join("&");
   config.cancelToken =
     config.cancelToken ||
-    new axios.CancelToken(cancel => {
+    new axios.CancelToken((cancel) => {
       if (!pending.has(url)) {
         // 如果 pending 中不存在当前请求，则添加进去
         pending.set(url, cancel);
@@ -41,12 +41,12 @@ const addPending = config => {
  * 移除请求
  * @param {Object} config
  */
-const removePending = config => {
+const removePending = (config) => {
   const url = [
     config.method,
     config.url,
     Qs.stringify(config.params),
-    config.data
+    config.data,
   ].join("&");
   if (pending.has(url)) {
     // 如果在 pending 中存在当前请求标识，需要取消当前请求，并且移除

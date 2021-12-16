@@ -3,8 +3,13 @@ import App from "./App.vue";
 import router from "./router";
 import "./router/router.interceptor";
 import store from "./store";
+import "./assets/scss/reset.scss";
+import "./assets/scss/app.scss";
+import "./common/fastclick";
+import "./plugins/vant";
+import vconsole from "vconsole";
 
-// Vue.config.productionTip = false;
+false && new vconsole();
 
 new Vue({
   router,

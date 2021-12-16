@@ -2,7 +2,7 @@
   <section class="page">
     <div class="page-content page-not-found">
       <div class="box">
-        <img src="~@images/bg_404.png" />
+        <img src="~assets/img/bg_404.png" />
         <p class="dec">-&nbsp;页面找不到了&nbsp;-</p>
       </div>
     </div>
@@ -11,7 +11,7 @@
 <style lang="scss" scoped>
 .page-not-found {
   position: relative;
-  background-color: #fff;
+  background-color: $colorWhite;
 
   .box {
     position: absolute;
@@ -33,7 +33,7 @@
   .dec {
     padding: 15px 0;
     font-size: 14px;
-    color: #999;
+    color: $color9;
   }
 }
 </style>
