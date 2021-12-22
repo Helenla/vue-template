@@ -1,21 +1,13 @@
-import Api from "./request";
+import Vue from "vue";
+import request from "./request";
+import urls from "./RUSTFULLURL";
 
-/**
- * @param data 入参
- * @returns promise
- */
+const FUNS = {};
 
-export function getSysParam(data = {}) {
-  return Api({
-    url: "/shop/getSysParam",
-    data,
-  });
-}
+Object.keys(urls).forEach((key) => {
+  FUNS[key] = (options = {}) => {
+    return request(urls[key], options);
+  };
+});
 
-export function getFirstLvGroup(data = {}) {
-  return Api({
-    url: "/shop/getFirstLvGroup",
-    data,
-    prefix: "MALL_PREFIX",
-  });
-}
+Object.defineProperty(Vue.prototype, "$services", { value: FUNS });

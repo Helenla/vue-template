@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import "./router/router.interceptor";
 import store from "./store";
+import "./services/api";
 import "./assets/scss/reset.scss";
 import "./assets/scss/app.scss";
 import "./common/fastclick";

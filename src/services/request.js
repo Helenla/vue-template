@@ -1,8 +1,9 @@
 import Qs from "qs";
 import axios from "axios";
-import { Toast } from "vant";
-import { timeout } from "@/constant";
+// import { Toast } from "vant";
+import { timeout, DEFAULT_PREFIX, HOME_PREFIX } from "@/constant";
 import { addPending, removePending } from "@/services/pending";
+import autoMatchBaseUrl from "./autoMatchBaseUrl";
 
 // 处理请求返回数据格式
 function handleSuccess(response) {
@@ -10,29 +11,21 @@ function handleSuccess(response) {
   const res = response.data;
   const prefixDataMap = {
     // 默认处理：例子
-    HOME_PREFIX() {
-      const errorNo = res.code;
-      if (errorNo === "0") {
-        return res.data;
-      } else if (errorNo === "20") {
-        Toast.clear();
-        return Promise.reject("接口超时");
+    [DEFAULT_PREFIX]() {
+      if (res) {
+        return res;
       } else {
-        Toast(res.data.errorInfo);
-        return Promise.reject(res.data.errorInfo);
+        // Toast(res.data.errorInfo);
+        return Promise.reject("111");
       }
     },
     // 特殊处理：例子
-    MALL_PREFIX() {
-      const errorNo = res.code;
-      if (errorNo === "0") {
-        return res.data;
-      } else if (errorNo === "20") {
-        Toast.clear();
-        return Promise.reject("接口超时");
+    [HOME_PREFIX]() {
+      if (res) {
+        return res;
       } else {
-        Toast(res.data.errorInfo);
-        return Promise.reject(res.data.errorInfo);
+        // Toast(res.data.errorInfo);
+        return Promise.reject("222");
       }
     },
   };
@@ -160,13 +153,17 @@ axios.interceptors.response.use(axiosResponse.success, axiosResponse.error);
  * @param dataType
  * @returns {Promise.<T>}
  */
-export default function request({
+export default function request(
   url,
-  method,
-  data,
-  prefix = "HOME_PREFIX",
-  headers = {},
-}) {
+  {
+    method,
+    data = {},
+    prefix = DEFAULT_PREFIX,
+    headers = {},
+    dataType = "json",
+  }
+) {
+  const baseURL = autoMatchBaseUrl(prefix);
   headers = Object.assign(
     method === "get"
       ? {
@@ -182,6 +179,7 @@ export default function request({
   const contentType = headers["Content-Type"];
 
   const defaultConfig = {
+    baseURL,
     url,
     method: method || "post",
     timeout,
@@ -189,7 +187,7 @@ export default function request({
     data,
     prefix,
     headers,
-    responseType: "json",
+    responseType: dataType,
   };
 
   if (method === "get") {
